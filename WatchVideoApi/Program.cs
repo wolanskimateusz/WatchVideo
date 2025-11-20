@@ -1,7 +1,27 @@
+using Microsoft.EntityFrameworkCore;
+using WatchVideoApi.Data;
 using WatchVideoApi.Interfaces;
 using WatchVideoApi.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
+
+DotNetEnv.Env.Load();
+
+// DataBase
+
+var connstring = builder.Configuration.GetConnectionString("DefaultConnection") ??
+                       throw new NullReferenceException("No connection string in config!");
+
+string connectionString = connstring
+    .Replace("{DB_Host}", Environment.GetEnvironmentVariable("DB_Host")!)
+    .Replace("{Database}", Environment.GetEnvironmentVariable("Database")!)
+    .Replace("{Username}", Environment.GetEnvironmentVariable("Username")!)
+    .Replace("{Password}", Environment.GetEnvironmentVariable("Password")!);
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+{
+    options.UseNpgsql(connectionString);
+});
 
 // Add services to the container.
 
@@ -10,6 +30,8 @@ builder.Services.AddControllers();
 builder.Services.AddScoped<IVideoRepository, VideoRepository>();
 
 builder.Services.AddOpenApi();
+
+
 
 var app = builder.Build();
 

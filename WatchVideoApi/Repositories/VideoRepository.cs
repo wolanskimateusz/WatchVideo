@@ -1,14 +1,21 @@
-﻿using WatchVideoApi.Interfaces;
+﻿using WatchVideoApi.Data;
+using WatchVideoApi.Interfaces;
 using WatchVideoApi.Models;
 
 namespace WatchVideoApi.Repositories;
 
 public class VideoRepository : IVideoRepository
 {
-    private Video video1 = new Video();
+    private readonly AppDbContext _context;
+
+    public VideoRepository(AppDbContext context)
+    {
+        _context = context;
+    }
     
     public string GetVideoName()
     {
-        return this.video1.Name;
+        var name = _context.Videos.FirstOrDefault(x => x.Id == 1)?.Name;
+        return name;
     }
 }
