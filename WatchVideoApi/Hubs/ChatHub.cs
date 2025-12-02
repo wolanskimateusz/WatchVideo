@@ -1,12 +1,26 @@
 ﻿using Microsoft.AspNetCore.SignalR;
-
-namespace WatchVideoApi.Hubs;
+using System.Text.RegularExpressions;
 
 public class ChatHub : Hub
 {
-    public async Task SendMessage(string user, string message)
+    public async Task JoinChat(string chatId)
     {
-        // Wysyła wiadomość do wszystkich klientów
-        await Clients.All.SendAsync("ReceiveMessage", user, message);
+        await Groups.AddToGroupAsync(Context.ConnectionId, chatId);
+    }
+
+    public async Task LeaveChat(string chatId)
+    {
+        await Groups.RemoveFromGroupAsync(Context.ConnectionId, chatId);
+    }
+
+    public async Task SendMessage(string chatId, string message)
+    {
+        await Clients.Group(chatId).SendAsync("ReceiveMessage", new
+        {
+            ChatId = chatId,
+            UserId = Context.UserIdentifier,
+            Message = message,
+            Timestamp = DateTime.UtcNow
+        });
     }
 }

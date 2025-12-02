@@ -12,4 +12,6 @@ public class AppDbContext : DbContext
     }
     
     public DbSet<Video> Videos { get; set; }
+    public DbSet<User> User { get; set; }
+    public DbSet<Chat> Chat { get; set; }
 }
