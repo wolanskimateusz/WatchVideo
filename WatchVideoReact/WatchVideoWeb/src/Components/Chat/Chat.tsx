@@ -5,6 +5,7 @@ function Chat()
 {
     const [messages, setMessages] = useState<string[]>([]);
     const [input, setInput] = useState("");
+    const [userName, setUserName] = useState<string>("User1")
 
   useEffect(() => {
      if (connection.state === "Disconnected") {
@@ -23,13 +24,15 @@ function Chat()
   }, []);
 
   const sendMessage = () => {
-    connection.invoke("SendMessage", "User1", input)
+    connection.invoke("SendMessage", userName, input)
       .catch(console.error);
     setInput("");
   };
 
   return (
     <div>
+        <p>Twoja nazwa: {userName}</p>
+        <input value={userName} onChange={e => setUserName(e.target.value)}/>
       <div>
         {messages.map((m, i) => <div key={i}>{m}</div>)}
       </div>
