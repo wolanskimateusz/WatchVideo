@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using WatchVideoApi.Data;
+using WatchVideoApi.Hubs;
 using WatchVideoApi.Interfaces;
 using WatchVideoApi.Repositories;
 
@@ -29,7 +30,8 @@ builder.Services.AddCors(options =>
     {
         policy.WithOrigins("http://localhost:5173") // Twój frontend Vite
             .AllowAnyHeader()
-            .AllowAnyMethod();
+            .AllowAnyMethod()
+            .AllowCredentials();
     });
 });
 
@@ -40,6 +42,7 @@ builder.Services.AddControllers();
 builder.Services.AddScoped<IVideoRepository, VideoRepository>();
 
 builder.Services.AddOpenApi();
+builder.Services.AddSignalR();
 
 
 
@@ -58,5 +61,7 @@ app.UseCors("AllowReactApp");
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapHub<ChatHub>("/chathub");
 
 app.Run();
