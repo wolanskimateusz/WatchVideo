@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using WatchVideoApi.Data;
-using WatchVideoApi.Hubs;
 using WatchVideoApi.Interfaces;
 using WatchVideoApi.Repositories;
 

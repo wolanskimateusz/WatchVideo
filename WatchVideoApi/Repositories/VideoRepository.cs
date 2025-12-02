@@ -15,7 +15,7 @@ public class VideoRepository : IVideoRepository
     
     public string GetVideoName()
     {
-        var name = _context.Videos.FirstOrDefault(x => x.Id == 1)?.Name;
+        var name = _context.Video.FirstOrDefault(x => x.Id == 1)?.Name;
         return name;
     }
 }

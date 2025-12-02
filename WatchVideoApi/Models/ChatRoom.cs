@@ -1,6 +1,6 @@
 namespace WatchVideoApi.Models;
 
-public class Chat
+public class ChatRoom
 {
     public int Id { get; set; }
     public string UrlEndPoint { get; set; }
