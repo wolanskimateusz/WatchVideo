@@ -3,6 +3,7 @@
   <component name="AvaloniaProject">
     <option name="projectPerEditor">
       <map>
+        <entry key="App.axaml" value="WatchVideoDesktop.csproj" />
         <entry key="Views/MainWindow.axaml" value="WatchVideoDesktop.csproj" />
       </map>
     </option>

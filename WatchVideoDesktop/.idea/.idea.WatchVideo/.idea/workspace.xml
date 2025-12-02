@@ -10,14 +10,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7072e823-a5b6-4298-b1cc-a32600496bd2" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../WatchVideoApi/Data/AppDbContext.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../WatchVideoApi/Models/Video.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../WatchVideoApi/Models/Video.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../WatchVideoApi/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../WatchVideoApi/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../WatchVideoApi/Repositories/VideoRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../WatchVideoApi/Repositories/VideoRepository.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../WatchVideoApi/WatchVideoApi.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/../WatchVideoApi/WatchVideoApi.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../WatchVideoApi/appsettings.json" beforeDir="false" afterPath="$PROJECT_DIR$/../WatchVideoApi/appsettings.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.WatchVideoDesktop/.idea/avalonia.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.WatchVideoDesktop/.idea/avalonia.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.WatchVideoDesktop/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.WatchVideoDesktop/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Program.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Views/MainWindow.axaml" beforeDir="false" afterPath="$PROJECT_DIR$/Views/MainWindow.axaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Views/MainWindow.axaml.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Views/MainWindow.axaml.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WatchVideoDesktop.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/WatchVideoDesktop.csproj" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -118,7 +116,10 @@
       <option name="presentableId" value="Default" />
       <updated>1763650369478</updated>
       <workItem from="1763650371263" duration="6329000" />
-      <workItem from="1763657393437" duration="1698000" />
+      <workItem from="1763657393437" duration="3792000" />
+      <workItem from="1763911378306" duration="2357000" />
+      <workItem from="1764012018354" duration="3482000" />
+      <workItem from="1764022359694" duration="4450000" />
     </task>
     <servers />
   </component>
