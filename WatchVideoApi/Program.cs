@@ -39,6 +39,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddScoped<IVideoRepository, VideoRepository>();
+builder.Services.AddScoped<IChatRoomRepository, ChatRoomRepository>();
 
 builder.Services.AddOpenApi();
 builder.Services.AddSignalR();

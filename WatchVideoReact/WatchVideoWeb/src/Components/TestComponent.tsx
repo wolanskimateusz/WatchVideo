@@ -6,7 +6,7 @@ function TestComponent ()
 {
 
     const [test, setTest] = useState<string | null>(null);
-
+    const [createResponse, setCreateResponse] = useState<any>();
     
     useEffect(()=>{
 
@@ -16,9 +16,20 @@ function TestComponent ()
         }
     fetchTest();
     },[])
+
+    
+
+    const createTest = async () => {
+            const testResponse = await axios.post("http://localhost:5147/api/chatroom") 
+            setCreateResponse(testResponse);      
+        }
+    
  
   return (
-    <div>{test}</div>
+    <div>{test}
+    <button onClick={createTest}> Stworz Pokoj</button>
+    </div>
+    
   )
 }
 
