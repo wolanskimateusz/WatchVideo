@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom"
 import Chat from "../../Components/Chat/Chat"
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { API_URL } from "../../config/api";
 
 
 interface ChatRoomData{
@@ -19,7 +20,7 @@ function ChatRoom ()
     useEffect(() => {
         const getRoomByUrl = async () => {
             try {
-                const response = await axios.get<ChatRoomData>(`http://localhost:5147/api/chatroom/${url}`);
+                const response = await axios.get<ChatRoomData>(`${API_URL}/api/chatroom/${url}`);
                 setRoom(response.data);
                 console.log(response.data);
             }

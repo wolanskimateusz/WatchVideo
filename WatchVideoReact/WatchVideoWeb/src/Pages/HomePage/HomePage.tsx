@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { API_URL} from "/src/config/api";
 import axios from "axios";
 
 export default function HomePage() {
@@ -12,7 +13,7 @@ export default function HomePage() {
     const fetchRooms = async () => {
       try {
         const response = await axios.get<string[]>(
-          "http://localhost:5147/api/chatroom"
+          `${API_URL}/api/chatroom`
         );
         setRooms(response.data);
       } catch (err) {
@@ -25,9 +26,10 @@ export default function HomePage() {
   const createRoom = async () => {
     try {
       const response = await axios.post(
-        "http://localhost:5147/api/chatroom"
+        `${API_URL}/api/chatroom`
       );
       setCreatedRoom(response.data);
+      navigate("/room/" + response.data.urlEndPoint);
     } catch (err) {
       console.error("Error creating room", err);
     }
