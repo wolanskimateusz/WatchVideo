@@ -1,7 +1,8 @@
 import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
+import { API_URL} from "../config/api";
 
 export const connection = new HubConnectionBuilder()
-    .withUrl("http://localhost:5147/chathub") // Twój backend
+    .withUrl(`${API_URL}/chathub`) // Twój backend
     .withAutomaticReconnect()
     .configureLogging(LogLevel.Information)
     .build();

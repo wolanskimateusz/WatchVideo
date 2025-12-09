@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { API_URL} from "/src/config/api";
+import { API_URL} from "../../config/api";
 import axios from "axios";
 
 export default function HomePage() {
@@ -16,6 +16,7 @@ export default function HomePage() {
           `${API_URL}/api/chatroom`
         );
         setRooms(response.data);
+        console.log(response.data);
       } catch (err) {
         console.error("Error fetching rooms", err);
       }
