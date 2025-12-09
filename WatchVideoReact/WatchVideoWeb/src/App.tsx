@@ -3,6 +3,7 @@ import './App.css'
 import TestComponent from './Components/TestComponent'
 import Chat from './Components/Chat/Chat'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
+import HomePage from "./Pages/HomePage/HomePage";
 import ChatRoom from './Pages/ChatRoomPage/ChatRoom'
 
 function App() {
@@ -10,10 +11,8 @@ function App() {
 
   return (
     <Router>
-      <TestComponent />
-        <Chat />
       <Routes>
-         <Route path="/chatroom/:url" element={<ChatRoom />} />
+         <Route path="/home" element={<HomePage/>} />
       </Routes>
     </Router>
        
