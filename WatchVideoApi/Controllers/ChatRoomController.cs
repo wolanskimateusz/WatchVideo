@@ -25,6 +25,11 @@ public class ChatRoomController : Controller
         await _chatRoomRepo.CreateChatRoomAsync();
         return Ok();
     }
-    
-    
+
+    [HttpGet]
+    public async Task<IActionResult> GetAll()
+    {
+        await _chatRoomRepo.GetAllChatRoomsAsync();
+        return Ok();
+    }
 }

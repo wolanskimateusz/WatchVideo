@@ -1,4 +1,5 @@
-﻿using WatchVideoApi.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using WatchVideoApi.Data;
 using WatchVideoApi.Interfaces;
 using WatchVideoApi.Models;
 
@@ -21,7 +22,14 @@ public class ChatRoomRepository :  IChatRoomRepository
         
         return chatRoomModel;
     }
-    
+
+    public async Task<List<ChatRoom>> GetAllChatRoomsAsync()
+    {
+        var chatRooms = await _context.ChatRoom.ToListAsync();
+        
+        return chatRooms;
+    }
+
     private string CreateUrlEndpoint()
     {
         var rooms = _context.ChatRoom.Count();
