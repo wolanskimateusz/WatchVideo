@@ -6,7 +6,7 @@ import axios from "axios";
 
 interface ChatRoomData{
     id : number
-    url : string
+    urlEndPoint : string
 }
 
 function ChatRoom ()
@@ -21,6 +21,7 @@ function ChatRoom ()
             try {
                 const response = await axios.get<ChatRoomData>(`http://localhost:5147/api/chatroom/${url}`);
                 setRoom(response.data);
+                console.log(response.data);
             }
              catch (e) {
                 console.error("Nie znaleziono pokoju", e);
@@ -30,7 +31,7 @@ function ChatRoom ()
     },[url])
 
     return <>
-    <h1>Pokoj: {room?.url}</h1>
+    <h1>Pokoj: {room?.urlEndPoint}</h1>
     <Chat />
     </>
 }

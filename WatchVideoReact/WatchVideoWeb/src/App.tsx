@@ -1,19 +1,17 @@
 
 import './App.css'
-import TestComponent from './Components/TestComponent'
-import Chat from './Components/Chat/Chat'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import HomePage from "./Pages/HomePage/HomePage";
-import ChatRoom from './Pages/ChatRoomPage/ChatRoom'
+import ChatRoom from './Pages/ChatRoomPage/ChatRoom';
+
 
 function App() {
   
-
   return (
     <Router>
       <Routes>
          <Route path="/home" element={<HomePage/>} />
-         <Route path="/chatroom:url" element={<ChatRoom/>} />
+         <Route path="/room/:url" element = {<ChatRoom />} ></Route>
       </Routes>
     </Router>
        

@@ -22,8 +22,8 @@ public class ChatRoomController : Controller
     public async Task<IActionResult> Create()
     {
         
-        await _chatRoomRepo.CreateChatRoomAsync();
-        return Ok();
+       var createdRoom =  await _chatRoomRepo.CreateChatRoomAsync();
+       return CreatedAtAction(nameof(GetChatRoomById), new { id = createdRoom.Id }, createdRoom);
     }
 
     [HttpGet]
