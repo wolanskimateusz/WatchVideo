@@ -5,7 +5,7 @@ import axios from "axios";
 export default function HomePage() {
   const navigate = useNavigate();
   const [userName, setUserName] = useState("Userx1");
-  const [rooms, setRooms] = useState<string[]>([]);
+  const [rooms, setRooms] = useState<any[]>([]);
   const [createdRoom, setCreatedRoom] = useState<any>(null);
 
   useEffect(() => {
@@ -38,10 +38,10 @@ export default function HomePage() {
       <div className="space-y-1">
         <h2 className="text-lg font-semibold">Lista pokoi:</h2>
         {rooms.map((room, i) => (
-          <div key={i} className="border p-2 rounded bg-gray-100">
-            {room}
+          <div key={room.id} className="border p-2 rounded bg-gray-100">
+            {room.urlEndPoint}
             <button
-              onClick={() => navigate("/room/" + room)}
+              onClick={() => navigate("/room/" + room.urlEndPoint)}
             > 
               Join
             </button>
