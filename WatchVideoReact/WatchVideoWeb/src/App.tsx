@@ -13,6 +13,7 @@ function App() {
     <Router>
       <Routes>
          <Route path="/home" element={<HomePage/>} />
+         <Route path="/chatroom:url" element={<ChatRoom/>} />
       </Routes>
     </Router>
        
