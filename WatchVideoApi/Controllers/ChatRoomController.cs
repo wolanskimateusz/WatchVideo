@@ -29,7 +29,26 @@ public class ChatRoomController : Controller
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        await _chatRoomRepo.GetAllChatRoomsAsync();
-        return Ok();
+       var chatrooms =  await _chatRoomRepo.GetAllChatRoomsAsync();
+       if (chatrooms != null)
+        return Ok(chatrooms);
+       else
+        return NotFound();
+    }
+
+    [HttpGet("d/{id}")]
+    public async Task<IActionResult> GetChatRoomById(int id)
+    {
+        var chatroom = await _chatRoomRepo.GetChatRoomByIdAsync(id);
+        if (chatroom != null) return Ok(chatroom);
+        return NotFound();
+    }
+
+    [HttpGet("{url}")]
+    public async Task<IActionResult> GetChatRoomByUrl(string url)
+    {
+        var chatroom = await _chatRoomRepo.GetChatRoomByUrlAsync(url);
+        if (chatroom != null) return Ok(chatroom);
+        return NotFound();
     }
 }
