@@ -33,7 +33,7 @@ function ChatRoom ()
 
     return <>
     <h1>Pokoj: {room?.urlEndPoint}</h1>
-    <Chat />
+    {room && <Chat roomId={room.urlEndPoint} />}
     </>
 }
 

@@ -7,4 +7,4 @@ export const connection = new HubConnectionBuilder()
     .configureLogging(LogLevel.Information)
     .build();
 
-    //https://f316bcfe8e04.ngrok-free.app/chathub
+  

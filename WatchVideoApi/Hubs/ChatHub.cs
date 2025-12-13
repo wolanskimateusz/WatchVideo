@@ -3,24 +3,19 @@ using System.Text.RegularExpressions;
 
 public class ChatHub : Hub
 {
-    public async Task JoinChat(string chatId)
+    public async Task JoinRoom(string roomId, string userName)
     {
-        await Groups.AddToGroupAsync(Context.ConnectionId, chatId);
+        await Groups.AddToGroupAsync(Context.ConnectionId, roomId);
     }
 
-    public async Task LeaveChat(string chatId)
+    public async Task LeaveRoom(string roomId, string userName)
     {
-        await Groups.RemoveFromGroupAsync(Context.ConnectionId, chatId);
+        await Groups.RemoveFromGroupAsync(Context.ConnectionId, roomId);
     }
 
-    public async Task SendMessage(string chatId, string message)
+    public async Task SendMessageToRoom(string roomId, string userName, string message)
     {
-        await Clients.Group(chatId).SendAsync("ReceiveMessage", new
-        {
-            ChatId = chatId,
-            UserId = Context.UserIdentifier,
-            Message = message,
-            Timestamp = DateTime.UtcNow
-        });
+        await Clients.Group(roomId)
+            .SendAsync("ReceiveMessage", userName, message);
     }
 }
