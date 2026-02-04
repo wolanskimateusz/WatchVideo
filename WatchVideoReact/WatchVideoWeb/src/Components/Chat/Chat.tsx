@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { connection } from "../../Services/ChatService";
+import "./Chat.css";
 
 interface Message {
   userName: string;
@@ -11,6 +12,7 @@ function Chat({ roomId }: { roomId: string }) {
   const [input, setInput] = useState("");
   const [userName, setUserName] = useState("User1");
   const [connected, setConnected] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const startConnection = async () => {
@@ -23,17 +25,14 @@ function Chat({ roomId }: { roomId: string }) {
         setConnected(true);
 
         connection.off("ReceiveMessage");
-
         connection.on("ReceiveMessage", (userName: string, message: string) => {
           setMessages(prev => [...prev, { userName, message }]);
         });
 
-       if(connection.state === "Connected") {
+        if (connection.state === "Connected") {
           await connection.invoke("JoinRoom", roomId, userName);
-          console.log(`Polaczono do pokoju  ${roomId}`)
-       }
-      
-
+          console.log(`Połączono do pokoju ${roomId}`);
+        }
       } catch (err) {
         console.error("❌ Błąd połączenia:", err);
       }
@@ -42,55 +41,78 @@ function Chat({ roomId }: { roomId: string }) {
     startConnection();
 
     return () => {
-      if(connection.state === "Connected") connection.invoke("LeaveRoom", roomId, userName);
+      if (connection.state === "Connected")
+        connection.invoke("LeaveRoom", roomId, userName);
       connection.off("ReceiveMessage");
-      
     };
-  }, []);
+  }, [roomId, userName]);
 
   const sendMessage = async () => {
     if (!connected || !input.trim()) return;
-
     try {
-     await connection.invoke("SendMessageToRoom", roomId,userName,input );
+      await connection.invoke("SendMessageToRoom", roomId, userName, input);
       setInput("");
     } catch (err) {
       console.error("❌ Błąd wysyłania:", err);
     }
   };
 
+  // auto-scroll po każdej zmianie messages
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
   return (
-    <div style={{ border: "1px solid gray", padding: "1rem" }}>
-      <p>
-        Twoja nazwa:
+    <div className="border rounded p-3 h-100 d-flex flex-column">
+      {/* Username */}
+      <div className="mb-3">
+        <label className="form-label fw-semibold">Twoja nazwa:</label>
         <input
+          className="form-control"
           value={userName}
           onChange={e => setUserName(e.target.value)}
-          style={{ marginLeft: "0.5rem" }}
+          placeholder="Wpisz nick"
         />
-      </p>
-
-      <div style={{ border: "1px solid black", padding: "0.5rem", minHeight: "200px", overflowY: "auto", marginBottom: "1rem" }}>
-        {messages.map((m, i) => (
-          <div key={i}>
-            <strong>{m.userName}:</strong> {m.message}
-          </div>
-        ))}
       </div>
 
-      <input
-        value={input}
-        onChange={e => setInput(e.target.value)}
-        placeholder="Napisz wiadomość..."
-        style={{ width: "70%", marginRight: "0.5rem" }}
-        disabled={!connected}
-      />
+      {/* Messages */}
+      <div className="chat-messages border rounded p-2 mb-3 flex-grow-1 overflow-auto d-flex flex-column">
+        {messages.map((m, i) => (
+          <div key={i} className="mb-1 chat-message">
+            <span className="chat-username">{m.userName}:</span>{" "}
+            <span className="chat-text">{m.message}</span>
+          </div>
+        ))}
+        <div ref={messagesEndRef} />
+      </div>
 
-      <button onClick={sendMessage} disabled={!connected || !input.trim()}>
-        Wyślij
-      </button>
+      {/* Input + button */}
+      <div className="input-group">
+        <input
+          className="form-control"
+          value={input}
+          onChange={e => setInput(e.target.value)}
+          onKeyDown={e => {
+            if (e.key === "Enter" && input.trim() && connected) {
+              sendMessage();
+              e.preventDefault();
+            }
+          }}
+          placeholder="Napisz wiadomość..."
+          disabled={!connected}
+        />
+        <button
+          className="btn btn-primary"
+          onClick={sendMessage}
+          disabled={!connected || !input.trim()}
+        >
+          Wyślij
+        </button>
+      </div>
 
-      {!connected && <p>Łączenie z serwerem...</p>}
+      {!connected && (
+        <div className="text-muted mt-2 small">Łączenie z serwerem...</div>
+      )}
     </div>
   );
 }

@@ -3,6 +3,7 @@ import Chat from "../../Components/Chat/Chat"
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { API_URL } from "../../config/api";
+import VideoPlayer from "../../Components/VideoPlayer/VideoPlayer";
 
 
 interface ChatRoomData{
@@ -31,10 +32,30 @@ function ChatRoom ()
             getRoomByUrl();
     },[url])
 
-    return <>
-    <h1>Pokoj: {room?.urlEndPoint}</h1>
-    {room && <Chat roomId={room.urlEndPoint} />}
-    </>
+   return (
+  <>
+    <h1 className="mb-3">Pokój: {room?.urlEndPoint}</h1>
+
+        <div className="container-fluid w-100 ">
+        <div className="row" style={{ height: "80vh" }}>
+            {/* VIDEO */}
+            <div className="col-8 h-100">
+            <div className="h-100 rounded">
+                <VideoPlayer />
+            </div>
+            </div>
+
+            {/* CHAT */}
+            <div className="col-4 h-100 ">
+            <div className="h-100 ps-3">
+                {room && <Chat roomId={room.urlEndPoint} />}
+            </div>
+            </div>
+        </div>
+        </div>
+  </>
+)
+
 }
 
 export default ChatRoom
