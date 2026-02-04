@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { connection } from "../../Services/ChatService";
+import { useSignalR } from "../../SignalRContext";
 import "./Chat.css";
 
 interface Message {
@@ -11,44 +11,28 @@ function Chat({ roomId }: { roomId: string }) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [userName, setUserName] = useState("User1");
-  const [connected, setConnected] = useState(false);
+
+  const connection = useSignalR();
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  // Subskrypcja odbioru wiadomości
   useEffect(() => {
-    const startConnection = async () => {
-      try {
-        if (connection.state === "Disconnected") {
-          await connection.start();
-          console.log("✅ Connected to SignalR");
-        }
+    if (!connection) return;
 
-        setConnected(true);
-
-        connection.off("ReceiveMessage");
-        connection.on("ReceiveMessage", (userName: string, message: string) => {
-          setMessages(prev => [...prev, { userName, message }]);
-        });
-
-        if (connection.state === "Connected") {
-          await connection.invoke("JoinRoom", roomId, userName);
-          console.log(`Połączono do pokoju ${roomId}`);
-        }
-      } catch (err) {
-        console.error("❌ Błąd połączenia:", err);
-      }
+    const handleMessage = (user: string, message: string) => {
+      setMessages(prev => [...prev, { userName: user, message }]);
     };
 
-    startConnection();
+    connection.on("ReceiveMessage", handleMessage);
 
     return () => {
-      if (connection.state === "Connected")
-        connection.invoke("LeaveRoom", roomId, userName);
-      connection.off("ReceiveMessage");
+      connection.off("ReceiveMessage", handleMessage);
     };
-  }, [roomId, userName]);
+  }, [connection]);
 
+  // Wyślij wiadomość
   const sendMessage = async () => {
-    if (!connected || !input.trim()) return;
+    if (!input.trim()) return;
     try {
       await connection.invoke("SendMessageToRoom", roomId, userName, input);
       setInput("");
@@ -57,7 +41,7 @@ function Chat({ roomId }: { roomId: string }) {
     }
   };
 
-  // auto-scroll po każdej zmianie messages
+  // Auto-scroll
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
@@ -93,26 +77,21 @@ function Chat({ roomId }: { roomId: string }) {
           value={input}
           onChange={e => setInput(e.target.value)}
           onKeyDown={e => {
-            if (e.key === "Enter" && input.trim() && connected) {
+            if (e.key === "Enter" && input.trim()) {
               sendMessage();
               e.preventDefault();
             }
           }}
           placeholder="Napisz wiadomość..."
-          disabled={!connected}
         />
         <button
           className="btn btn-primary"
           onClick={sendMessage}
-          disabled={!connected || !input.trim()}
+          disabled={!input.trim()}
         >
           Wyślij
         </button>
       </div>
-
-      {!connected && (
-        <div className="text-muted mt-2 small">Łączenie z serwerem...</div>
-      )}
     </div>
   );
 }

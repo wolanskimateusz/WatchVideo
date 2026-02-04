@@ -4,19 +4,29 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { API_URL } from "../../config/api";
 import VideoPlayer from "../../Components/VideoPlayer/VideoPlayer";
+import { connection } from "../../Services/ChatService";
+import { SignalRContext } from "../../SignalRContext";
 
 
 interface ChatRoomData{
-    id : number
+    id : string
     urlEndPoint : string
+}
+
+interface Message {
+  userName: string;
+  message: string;
 }
 
 function ChatRoom ()
 {
     
     const {url} = useParams();
-
     const [room, setRoom] = useState<ChatRoomData | null>();
+    const [userName, setUserName] = useState("User1");
+    const [connected, setConnected] = useState(false);
+    const [messages, setMessages] = useState<Message[]>([]);
+
 
     useEffect(() => {
         const getRoomByUrl = async () => {
@@ -32,6 +42,37 @@ function ChatRoom ()
             getRoomByUrl();
     },[url])
 
+
+    useEffect(() => {
+    if (!room) return;
+    const startConnection = async () => {
+      try {
+        if (connection.state === "Disconnected") {
+          await connection.start();
+          console.log("✅ Connected to SignalR");
+        }
+
+        setConnected(true);
+
+
+        if (connection.state === "Connected") {
+          await connection.invoke("JoinRoom", room.urlEndPoint, userName);
+          console.log(`Połączono do pokoju ${room?.id}`);
+        }
+      } catch (err) {
+        console.error("❌ Błąd połączenia:", err);
+      }
+    };
+
+    startConnection();
+
+    return () => {
+      if (connection.state === "Connected")
+        connection.invoke("LeaveRoom", room?.id, userName);
+      connection.off("ReceiveMessage");
+    };
+  }, [room?.id, userName]);
+
    return (
   <>
     <h1 className="mb-3">Pokój: {room?.urlEndPoint}</h1>
@@ -41,14 +82,16 @@ function ChatRoom ()
             {/* VIDEO */}
             <div className="col-8 h-100">
             <div className="h-100 rounded">
-                <VideoPlayer />
+                  test           {/* <VideoPlayer /> */}
             </div>
             </div>
 
             {/* CHAT */}
             <div className="col-4 h-100 ">
             <div className="h-100 ps-3">
+                <SignalRContext.Provider value={connection}>
                 {room && <Chat roomId={room.urlEndPoint} />}
+                </SignalRContext.Provider>
             </div>
             </div>
         </div>
