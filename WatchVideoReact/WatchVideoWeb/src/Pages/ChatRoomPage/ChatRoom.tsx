@@ -24,7 +24,6 @@ function ChatRoom ()
     const {url} = useParams();
     const [room, setRoom] = useState<ChatRoomData | null>();
     const [userName, setUserName] = useState("User1");
-    const [connected, setConnected] = useState(false);
     const [messages, setMessages] = useState<Message[]>([]);
 
 
@@ -52,8 +51,6 @@ function ChatRoom ()
           console.log("✅ Connected to SignalR");
         }
 
-        setConnected(true);
-
 
         if (connection.state === "Connected") {
           await connection.invoke("JoinRoom", room.urlEndPoint, userName);
@@ -68,10 +65,10 @@ function ChatRoom ()
 
     return () => {
       if (connection.state === "Connected")
-        connection.invoke("LeaveRoom", room?.id, userName);
+        connection.invoke("LeaveRoom", room.urlEndPoint, userName);
       connection.off("ReceiveMessage");
     };
-  }, [room?.id, userName]);
+  }, [room?.urlEndPoint, userName]);
 
    return (
   <>
@@ -82,7 +79,9 @@ function ChatRoom ()
             {/* VIDEO */}
             <div className="col-8 h-100">
             <div className="h-100 rounded">
-                  test           {/* <VideoPlayer /> */}
+              <SignalRContext.Provider value={connection}>
+                 {room && <VideoPlayer roomId={room.urlEndPoint}/>}
+              </SignalRContext.Provider>
             </div>
             </div>
 
