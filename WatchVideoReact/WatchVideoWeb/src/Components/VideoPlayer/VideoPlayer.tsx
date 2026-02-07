@@ -7,7 +7,7 @@ function VideoPlayer({ roomId }: { roomId: string })
 {
     const [isPlaying, setIsPlaying] = useState<boolean>(false);
     const playerRef = useRef<any>(null)
-    const [videoURL, setVideoURL] = useState<string> ("")
+    const [videoURL, setVideoURL] = useState<string> ("https://www.youtube.com/watch?v=Fanedv0lMCE")
 
     const sendPlay = () => {
     connection.invoke("StartVideo", roomId);
@@ -56,7 +56,7 @@ function VideoPlayer({ roomId }: { roomId: string })
             />
        <ReactPlayer
         ref={playerRef}
-       src='https://www.youtube.com/watch?v=XCGqOTX6g8s&list=RDXCGqOTX6g8s'
+       src={videoURL}
        playing = {isPlaying}
       config={{
         youtube: {
