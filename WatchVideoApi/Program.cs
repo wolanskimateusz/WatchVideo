@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using WatchVideoApi.Data;
 using WatchVideoApi.Interfaces;
 using WatchVideoApi.Repositories;
+using WatchVideoApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -41,6 +42,7 @@ builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddScoped<IVideoRepository, VideoRepository>();
 builder.Services.AddScoped<IChatRoomRepository, ChatRoomRepository>();
+builder.Services.AddSingleton<RoomStateService>();
 
 builder.Services.AddOpenApi();
 builder.Services.AddSignalR();
