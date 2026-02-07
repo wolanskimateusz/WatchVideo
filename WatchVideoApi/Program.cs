@@ -28,7 +28,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowReactApp", policy =>
     {
         policy.WithOrigins("http://localhost:5173",
-                "https://2dde62e8d028.ngrok-free.app") // Twój frontend Vite
+                "https://de88-2a02-2a40-79e8-3400-343f-7d3e-9334-5ba3.ngrok-free.app") // Twój frontend Vite
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials();
