@@ -6,12 +6,9 @@ import { connection } from '../../Services/ChatService'
 function VideoPlayer({ roomId }: { roomId: string })
 {
     const [isPlaying, setIsPlaying] = useState<boolean>(false);
-    const [isMuted, setIsMuted] = useState<boolean>(false)
-    const playerRef = useRef<any | null>(null);
-
 
     const sendPlay = () => {
-    connection.invoke("StartVideo", roomId, 0);
+    connection.invoke("StartVideo", roomId);
     };
 
     const sendPause = () => {
@@ -21,15 +18,12 @@ function VideoPlayer({ roomId }: { roomId: string })
     useEffect(() => {
         const onStart = () => {
             console.log("🔥 ODEBRAŁEM StartVideo");
-            playerRef.current?.getInternalPlayer()?.playVideo?.();
             setIsPlaying(true);
-            setIsMuted(false);
+           
         };
          const onPause = () => {
             console.log("🔥 ODEBRAŁEM PauseVideo");
-            playerRef.current?.getInternalPlayer()?.pauseVideo?.();
             setIsPlaying(false);
-            setIsMuted(true);
         };
 
         connection.on("StartVideo", onStart);
@@ -51,7 +45,6 @@ function VideoPlayer({ roomId }: { roomId: string })
         color: 'white',
         },
     }}
-        
        ></ReactPlayer>
 
        <button onClick={sendPlay}>PLAY</button>

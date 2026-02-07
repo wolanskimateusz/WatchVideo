@@ -19,9 +19,9 @@ public class ChatHub : Hub
             .SendAsync("ReceiveMessage", userName, message);
     }
 
-    public async Task StartVideo(string roomId, double currTime)
+    public async Task StartVideo(string roomId)
     {
-        await Clients.Group(roomId).SendAsync("StartVideo", currTime);
+        await Clients.Group(roomId).SendAsync("StartVideo");
     }
     
     public async Task PauseVideo(string roomId)
