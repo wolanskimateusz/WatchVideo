@@ -30,7 +30,7 @@ function ChatRoom ()
     useEffect(() => {
         const getRoomByUrl = async () => {
             try {
-                const response = await axios.get<ChatRoomData>(`${API_URL}/api/chatroom/${url}`);
+                const response = await axios.get<ChatRoomData>(`${API_URL}/api/chatroom/${url}?ngrok-skip-browser-warning=true`);
                 setRoom(response.data);
                 console.log(response.data);
             }
