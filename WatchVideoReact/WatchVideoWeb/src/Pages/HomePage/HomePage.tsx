@@ -12,9 +12,7 @@ export default function HomePage() {
   useEffect(() => {
     const fetchRooms = async () => {
       try {
-        const response = await axios.get<string[]>(`${API_URL}/api/chatroom`, 
-          { headers: { "ngrok-skip-browser-warning": "true" } }
-        );
+        const response = await axios.get<string[]>(`${API_URL}/api/chatroom`);
         setRooms(response.data);
         console.log("odebrane z api: ",response.data);
       } catch (err) {
