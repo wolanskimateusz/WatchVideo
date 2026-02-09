@@ -3,13 +3,15 @@ import ReactPlayer from 'react-player'
 import { connection } from '../../Services/ChatService'
 
 
-function VideoPlayer({ roomId }: { roomId: string })
+function VideoPlayer({ roomId, userName }: { roomId: string, userName: string })
 {
     const [isPlaying, setIsPlaying] = useState<boolean>(false);
     const playerRef = useRef<any>(null)
     const [videoURL, setVideoURL] = useState<string> ()
     const [currTime, setCurrTime] = useState<number>()
-    const [pendingSeek, setPendingSeek] = useState<number | null>(null);
+    const [videoTitle, setVideoTitle] = useState<string>()
+
+    const isLocalChangeRef = useRef(false);
 
 
     const sendPlay = () => {
@@ -21,7 +23,7 @@ function VideoPlayer({ roomId }: { roomId: string })
     };
 
     const sendChangeVideo = () => {
-    connection.invoke("ChangeVideo", roomId, videoURL);
+    connection.invoke("ChangeVideo", roomId, videoURL, userName, videoTitle);
     };
 
     const sendCurrentTime = (time: number) => {
@@ -34,21 +36,21 @@ function VideoPlayer({ roomId }: { roomId: string })
     useEffect(() => {
 
         const onSyncRoomState = (url: string, time: number, playing: boolean) => {
+            isLocalChangeRef.current = false;
             setVideoURL(url);  
-            setCurrTime(time);           
-            setPendingSeek(time);        
+            setCurrTime(time);                  
             setIsPlaying(playing)
         };
 
 
         const onStart = (time : number) => {
-            console.log("🔥 ODEBRAŁEM StartVideo");
+            console.log("ODEBRAŁEM StartVideo");
             playerRef.current.api.seekTo(time)
             setIsPlaying(true);
            
         };
          const onPause = () => {
-            console.log("🔥 ODEBRAŁEM PauseVideo");
+            console.log("ODEBRAŁEM PauseVideo");
             setIsPlaying(false);
             const time = playerRef.current.api.getCurrentTime()
             setCurrTime(time)
@@ -59,6 +61,7 @@ function VideoPlayer({ roomId }: { roomId: string })
         };
 
         const onVideoChange = (url:string) => {
+            isLocalChangeRef.current = false;
             setVideoURL(url)
             setIsPlaying(false);
             console.log("nowe video", playerRef.current.api.videoTitle)
@@ -77,15 +80,30 @@ function VideoPlayer({ roomId }: { roomId: string })
         };
     }, []);
 
+    useEffect(() => {
+        if (!videoTitle || !videoURL) return;
+        if (!isLocalChangeRef.current) return;
+
+        connection.invoke(
+            "ChangeVideo",
+            roomId,
+            videoURL,
+            userName,
+            videoTitle
+        );
+        }, [videoTitle]);
+
     return (
         <>
        <input
-            type="text"
             value={videoURL}
-            onChange={(e) => setVideoURL(e.target.value)}
-            placeholder="Wpisz tekst"
+            onChange={(e) => {
+                isLocalChangeRef.current = true;
+                setVideoURL(e.target.value);
+                setVideoTitle(""); 
+            }}
             />
-            <button onClick={sendChangeVideo}>CHANGE VIDEO</button>
+
        <ReactPlayer
         ref={playerRef}
        src={videoURL}
@@ -95,11 +113,9 @@ function VideoPlayer({ roomId }: { roomId: string })
         color: 'white',
         },
     }}
-      onReady={() => {
-            if (pendingSeek !== null && playerRef.current) {
-                playerRef.current.api.seekTo(pendingSeek);
-                setPendingSeek(null);
-            }
+     onReady={() => {
+        const title = playerRef.current.api.videoTitle;
+        if (title) setVideoTitle(title);
         }}
         
        ></ReactPlayer>

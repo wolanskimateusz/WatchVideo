@@ -13,10 +13,6 @@ interface ChatRoomData{
     urlEndPoint : string
 }
 
-interface Message {
-  userName: string;
-  message: string;
-}
 
 function ChatRoom ()
 {
@@ -24,7 +20,6 @@ function ChatRoom ()
     const {url} = useParams();
     const [room, setRoom] = useState<ChatRoomData | null>();
     const [userName, setUserName] = useState("User1");
-    const [messages, setMessages] = useState<Message[]>([]);
 
 
     useEffect(() => {
@@ -48,7 +43,7 @@ function ChatRoom ()
       try {
         if (connection.state === "Disconnected") {
           await connection.start();
-          console.log("✅ Connected to SignalR");
+          console.log(" Connected to SignalR");
         }
 
 
@@ -57,7 +52,7 @@ function ChatRoom ()
           console.log(`Połączono do pokoju ${room?.id}`);
         }
       } catch (err) {
-        console.error("❌ Błąd połączenia:", err);
+        console.error(" Błąd połączenia:", err);
       }
     };
 
@@ -80,7 +75,7 @@ function ChatRoom ()
             <div className="col-8 h-100">
             <div className="h-100 rounded">
               <SignalRContext.Provider value={connection}>
-                 {room && <VideoPlayer roomId={room.urlEndPoint}/>}
+                 {room && <VideoPlayer roomId={room.urlEndPoint} userName={userName}/>}
               </SignalRContext.Provider>
             </div>
             </div>
@@ -89,7 +84,7 @@ function ChatRoom ()
             <div className="col-4 h-100 ">
             <div className="h-100 ps-3">
                 <SignalRContext.Provider value={connection}>
-                {room && <Chat roomId={room.urlEndPoint} />}
+                {room && <Chat roomId={room.urlEndPoint} userName={userName} />}
                 </SignalRContext.Provider>
             </div>
             </div>

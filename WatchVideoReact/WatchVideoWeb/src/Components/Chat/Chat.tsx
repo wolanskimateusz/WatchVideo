@@ -3,92 +3,81 @@ import { useSignalR } from "../../SignalRContext";
 import "./Chat.css";
 
 interface Message {
-  userName: string;
+  userName?: string;
   message: string;
+  type: "user" | "system";
 }
 
-function Chat({ roomId }: { roomId: string }) {
+function Chat({ roomId, userName }: { roomId: string , userName: string}) {
+
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
-  const [userName, setUserName] = useState("User1");
-
+  
   const connection = useSignalR();
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Subskrypcja odbioru wiadomości
   useEffect(() => {
     if (!connection) return;
 
     const handleMessage = (user: string, message: string) => {
-      setMessages(prev => [...prev, { userName: user, message }]);
+      setMessages((prev) => [
+        ...prev,
+        { userName: user, message, type: "user" },
+      ]);
+    };
+
+    const handleSystemMessage = (message: string) => {
+      setMessages((prev) => [...prev, { message, type: "system" }]);
     };
 
     connection.on("ReceiveMessage", handleMessage);
+    connection.on("ReceiveSystemMessage", handleSystemMessage);
 
     return () => {
       connection.off("ReceiveMessage", handleMessage);
+      connection.off("ReceiveSystemMessage", handleSystemMessage);
     };
   }, [connection]);
 
-  // Wyślij wiadomość
   const sendMessage = async () => {
     if (!input.trim()) return;
-    try {
-      await connection.invoke("SendMessageToRoom", roomId, userName, input);
-      setInput("");
-    } catch (err) {
-      console.error("❌ Błąd wysyłania:", err);
-    }
+    await connection.invoke("SendMessageToRoom", roomId, userName, input);
+    setInput("");
   };
 
-  // Auto-scroll
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   return (
     <div className="border rounded p-3 h-100 d-flex flex-column">
-      {/* Username */}
-      <div className="mb-3">
-        <label className="form-label fw-semibold">Twoja nazwa:</label>
-        <input
-          className="form-control"
-          value={userName}
-          onChange={e => setUserName(e.target.value)}
-          placeholder="Wpisz nick"
-        />
-      </div>
-
+      
       {/* Messages */}
       <div className="chat-messages border rounded p-2 mb-3 flex-grow-1 overflow-auto d-flex flex-column">
         {messages.map((m, i) => (
-          <div key={i} className="mb-1 chat-message">
-            <span className="chat-username">{m.userName}:</span>{" "}
-            <span className="chat-text">{m.message}</span>
+          <div key={i} className={`mb-1 chat-message ${m.type}`}>
+            {m.type === "user" ? (
+              <>
+                <span className="chat-username">{m.userName}:</span>{" "}
+                <span className="chat-text">{m.message}</span>
+              </>
+            ) : (
+              <span className="chat-system">{m.message}</span>
+            )}
           </div>
         ))}
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Input + button */}
+      {/* Input */}
       <div className="input-group">
         <input
           className="form-control"
           value={input}
-          onChange={e => setInput(e.target.value)}
-          onKeyDown={e => {
-            if (e.key === "Enter" && input.trim()) {
-              sendMessage();
-              e.preventDefault();
-            }
-          }}
-          placeholder="Napisz wiadomość..."
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && sendMessage()}
         />
-        <button
-          className="btn btn-primary"
-          onClick={sendMessage}
-          disabled={!input.trim()}
-        >
+        <button className="btn btn-primary" onClick={sendMessage}>
           Wyślij
         </button>
       </div>

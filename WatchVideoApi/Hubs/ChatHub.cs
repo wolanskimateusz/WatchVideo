@@ -14,12 +14,16 @@ public class ChatHub : Hub
     {
         await Groups.AddToGroupAsync(Context.ConnectionId, roomId);
         var room = _roomStateService.GetRoom(roomId);
+
+        await Clients.Group(roomId).SendAsync("ReceiveSystemMessage", $"{userName} joined room");
         await Clients.Caller.SendAsync("SyncRoomState", room.videoUrl, room.currTime, room.isPlaying);
     }
 
     public async Task LeaveRoom(string roomId, string userName)
     {
+        await Clients.Group(roomId).SendAsync("ReceiveSystemMessage", $"{userName} left room");
         await Groups.RemoveFromGroupAsync(Context.ConnectionId, roomId);
+        
     }
 
     public async Task SendMessageToRoom(string roomId, string userName, string message)
@@ -41,10 +45,11 @@ public class ChatHub : Hub
         await Clients.Group(roomId).SendAsync("PauseVideo");
     }
     
-    public async Task ChangeVideo(string roomId, string url)
+    public async Task ChangeVideo(string roomId, string url, string userName, string videoTitle)
     {
         _roomStateService.SetVideo(roomId, url);
         await Clients.Group(roomId).SendAsync("VideoChange", url);
+        await Clients.Group(roomId).SendAsync("ReceiveSystemMessage", $"{userName} changed video to {videoTitle}");
     }
 
     public async Task UpdateCurrTime(string roomId, double currTime)
@@ -57,4 +62,5 @@ public class ChatHub : Hub
         
         Console.WriteLine($"Updated room {roomId} currentTime={currTime}");
     }
+    
 }
