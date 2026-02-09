@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using WatchVideoApi.Data;
+using WatchVideoApi.Dtos;
 using WatchVideoApi.Interfaces;
 using WatchVideoApi.Models;
 
@@ -14,10 +15,13 @@ public class ChatRoomRepository :  IChatRoomRepository
     {
         _context = context;
     }
-    public async Task<ChatRoom> CreateChatRoomAsync()    //unikalny url dodac zabezpieczenia   
+    public async Task<ChatRoom> CreateChatRoomAsync(string roomName)       
     {
         var chatRoomModel = new ChatRoom();
-        chatRoomModel.UrlEndPoint = CreateUrlEndpoint();
+        var room = await GetChatRoomByUrlAsync(roomName.Trim());
+        if (room == null && !string.IsNullOrEmpty(roomName)) 
+            chatRoomModel.UrlEndPoint = roomName.Trim();
+        else chatRoomModel.UrlEndPoint = await CreateDefaultUrlEndpoint();
         await _context.AddAsync(chatRoomModel);
         await _context.SaveChangesAsync();
     
@@ -45,9 +49,9 @@ public class ChatRoomRepository :  IChatRoomRepository
         return chatroom;
     }
 
-    private string CreateUrlEndpoint()
+    private async Task<string> CreateDefaultUrlEndpoint()
     {
-        var rooms = _context.ChatRoom.Count();
+        var rooms = await _context.ChatRoom.CountAsync();
         var url = $"room{rooms+1}";
         return url;
     }

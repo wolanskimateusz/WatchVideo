@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-
+using WatchVideoApi.Dtos;
 using WatchVideoApi.Interfaces;
 
 using WatchVideoApi.Models;
@@ -19,10 +19,10 @@ public class ChatRoomController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create()
-    {
-        
-       var createdRoom =  await _chatRoomRepo.CreateChatRoomAsync();
+    public async Task<IActionResult> Create([FromBody] CreateFromRequest request)
+    { 
+        var roomName = request?.roomName;
+       var createdRoom =  await _chatRoomRepo.CreateChatRoomAsync(roomName);
        return CreatedAtAction(nameof(GetChatRoomById), new { id = createdRoom.Id }, createdRoom);
     }
 
