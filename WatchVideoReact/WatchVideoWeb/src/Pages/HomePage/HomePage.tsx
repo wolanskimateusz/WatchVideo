@@ -5,7 +5,7 @@ import axios from "axios";
 
 export default function HomePage() {
   const navigate = useNavigate();
-  const [userName, setUserName] = useState("Userx1");
+  const [userName, setUserName] = useState("User1");
   const [rooms, setRooms] = useState<any[]>([]);
   const [createdRoom, setCreatedRoom] = useState<any>(null);
 
@@ -20,6 +20,8 @@ export default function HomePage() {
       }
     };
     fetchRooms();
+    const user = localStorage.getItem("userName")
+    if(user) setUserName(user)
   }, []);
 
   const createRoom = async () => {
@@ -33,24 +35,12 @@ export default function HomePage() {
       console.error("Error creating room", err);
     }
   };
+  
 
   return (
     <div className="p-6 space-y-4">
       <div className="space-y-1">
-        <h2 className="text-lg font-semibold">Lista pokoi:</h2>
-        {rooms.map((room, i) => (
-          <div key={room.id} className="border p-2 rounded bg-gray-100">
-            {room.urlEndPoint}
-            <button
-              onClick={() => navigate("/room/" + room.urlEndPoint)}
-            > 
-              Join
-            </button>
-          </div>
-        ))}
-      </div>
-
-      <div>
+        <div>
         <p>Twoja nazwa: {userName}</p>
         <input
           value={userName}
@@ -58,6 +48,22 @@ export default function HomePage() {
           className="border p-1"
         />
       </div>
+        <h2 className="text-lg font-semibold">Lista pokoi:</h2>
+        {rooms.map((room, i) => (
+          <div key={room.id} className="border p-2 rounded bg-gray-100">
+            {room.urlEndPoint}
+            <button
+              onClick={() => {
+                localStorage.setItem("userName", userName)
+                navigate("/room/" + room.urlEndPoint)
+              }}
+            > 
+              Join
+            </button>
+          </div>
+        ))}
+      </div>
+
 
       <button
         onClick={createRoom}

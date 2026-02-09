@@ -51,7 +51,16 @@ function Chat({ roomId, userName }: { roomId: string , userName: string}) {
 
   return (
     <div className="border rounded p-3 h-100 d-flex flex-column">
-      
+        {/* Nazwa użytkownika */}
+      <div className="mb-3">
+        <label className="form-label fw-semibold">Twoja nazwa:</label>
+        <input
+          className="form-control"
+          value={userName}
+          onChange={(e) => localStorage.setItem("userName", e.target.value)}
+          placeholder="Wpisz nick"
+        />
+      </div>
       {/* Messages */}
       <div className="chat-messages border rounded p-2 mb-3 flex-grow-1 overflow-auto d-flex flex-column">
         {messages.map((m, i) => (

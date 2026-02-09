@@ -22,13 +22,8 @@ function VideoPlayer({ roomId, userName }: { roomId: string, userName: string })
     connection.invoke("PauseVideo", roomId);
     };
 
-    const sendChangeVideo = () => {
-    connection.invoke("ChangeVideo", roomId, videoURL, userName, videoTitle);
-    };
-
     const sendCurrentTime = (time: number) => {
     connection.invoke("UpdateCurrTime", roomId, time);
-    console.log("Sending currTime", time, "roomId=", roomId);
 
     };
 
@@ -102,23 +97,29 @@ function VideoPlayer({ roomId, userName }: { roomId: string, userName: string })
                 setVideoURL(e.target.value);
                 setVideoTitle(""); 
             }}
+            placeholder='Video link here'
             />
 
        <ReactPlayer
         ref={playerRef}
-       src={videoURL}
-       playing = {isPlaying}
-      config={{
-        youtube: {
-        color: 'white',
-        },
-    }}
-     onReady={() => {
-        const title = playerRef.current.api.videoTitle;
-        if (title) setVideoTitle(title);
+        src={videoURL}
+        playing = {isPlaying}
+        config={{
+            youtube: {
+            color: 'white',
+            },
         }}
-        
+        onReady={() => {
+            const title = playerRef.current.api.videoTitle;
+            if (title) setVideoTitle(title);
+        }}
+        onTimeUpdate={() => {
+            const time = playerRef.current.api.getCurrentTime()
+            setCurrTime(time)
+            sendCurrentTime(time)
+        }} 
        ></ReactPlayer>
+       
 
        <button onClick={sendPlay}>PLAY</button>
        <button onClick={sendPause}>PAUSE</button>
