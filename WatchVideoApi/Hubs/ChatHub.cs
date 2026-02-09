@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using System.Text.RegularExpressions;
+using WatchVideoApi.Dtos;
 using WatchVideoApi.Services;
 
 public class ChatHub : Hub
@@ -14,18 +15,36 @@ public class ChatHub : Hub
     {
         await Groups.AddToGroupAsync(Context.ConnectionId, roomId);
         var room = _roomStateService.GetRoom(roomId);
+        await  _roomStateService.AddUser(roomId, userName, Context.ConnectionId);
 
         await Clients.Group(roomId).SendAsync("ReceiveSystemMessage", $"{userName} joined room");
         await Clients.Caller.SendAsync("SyncRoomState", room.videoUrl, room.currTime, room.isPlaying);
+
+        await UpdateUsers(roomId);
     }
 
     public async Task LeaveRoom(string roomId, string userName)
     {
-        await Clients.Group(roomId).SendAsync("ReceiveSystemMessage", $"{userName} left room");
         await Groups.RemoveFromGroupAsync(Context.ConnectionId, roomId);
-        
-    }
+        _roomStateService.RemoveUserByConnection(Context.ConnectionId);
 
+        await Clients.Group(roomId).SendAsync("ReceiveSystemMessage", $"{userName} left room");
+        await UpdateUsers(roomId);
+    }
+    
+    public override async Task OnDisconnectedAsync(Exception? exception)
+    {
+        _roomStateService.RemoveUserByConnection(Context.ConnectionId);
+
+        
+        foreach (var room in _roomStateService.GetAllRooms())
+        {
+            await UpdateUsers(room.roomId);
+        }
+
+        await base.OnDisconnectedAsync(exception);
+    }
+    
     public async Task SendMessageToRoom(string roomId, string userName, string message)
     {
         await Clients.Group(roomId)
@@ -61,6 +80,18 @@ public class ChatHub : Hub
         room.currTime = currTime;
         
         Console.WriteLine($"Updated room {roomId} currentTime={currTime}");
+    }
+
+    public async Task UpdateUsers(string roomId)
+    {
+        var room = _roomStateService.GetRoom(roomId);
+        var dto = new RoomUsersDto
+        {
+            RoomId = roomId,
+            Users = room.users.Select(u => new UserDto {userName = u.Name}).ToList()
+        };
+        
+        await Clients.Group(roomId).SendAsync("RoomUsersUpdated", dto);
     }
     
 }

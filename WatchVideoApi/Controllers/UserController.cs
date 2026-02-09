@@ -5,7 +5,8 @@ using WatchVideoApi.Interfaces;
 
 namespace WatchVideoApi.Controllers;
 
-[Controller]
+[ApiController]
+[Route("api/user")]
 public class UserController : Controller
 {
     private readonly IUserRepository _userRepo;
@@ -25,7 +26,7 @@ public class UserController : Controller
     
     
     [HttpGet ("d/{id}")]
-    public async Task<IActionResult> GetUserById([FromQuery] int id)
+    public async Task<IActionResult> GetUserById([FromQuery] string id)
     {
         var user = _userRepo.GetUserById(id);
         if (user == null) return NotFound();
@@ -39,5 +40,14 @@ public class UserController : Controller
         var user = await _userRepo.CreateUser(userName);
         return CreatedAtAction(nameof(GetUserById), new { id = user.Id }, user);
         
+    }
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Delete([FromQuery] string id)
+    {
+        var user = await _userRepo.GetUserById(id);
+        if (user == null) return NotFound();
+        await _userRepo.DeleteUser(id);
+        return Ok(user);
     }
 }

@@ -1,52 +1,49 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
 namespace WatchVideoApi.Migrations
 {
     /// <inheritdoc />
-    public partial class AddedChat : Migration
+    public partial class reCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Chat",
+                name: "ChatRoom",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Id = table.Column<string>(type: "text", nullable: false),
                     UrlEndPoint = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Chat", x => x.Id);
+                    table.PrimaryKey("PK_ChatRoom", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "User",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Id = table.Column<string>(type: "text", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
-                    ChatId = table.Column<int>(type: "integer", nullable: true)
+                    ChatRoomId = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_User", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_User_Chat_ChatId",
-                        column: x => x.ChatId,
-                        principalTable: "Chat",
+                        name: "FK_User_ChatRoom_ChatRoomId",
+                        column: x => x.ChatRoomId,
+                        principalTable: "ChatRoom",
                         principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_User_ChatId",
+                name: "IX_User_ChatRoomId",
                 table: "User",
-                column: "ChatId");
+                column: "ChatRoomId");
         }
 
         /// <inheritdoc />
@@ -56,7 +53,7 @@ namespace WatchVideoApi.Migrations
                 name: "User");
 
             migrationBuilder.DropTable(
-                name: "Chat");
+                name: "ChatRoom");
         }
     }
 }

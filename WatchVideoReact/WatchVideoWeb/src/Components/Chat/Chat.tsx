@@ -8,10 +8,11 @@ interface Message {
   type: "user" | "system";
 }
 
-function Chat({ roomId, userName }: { roomId: string , userName: string}) {
+function Chat({ roomId, userName, setUserName }: { roomId: string , userName: string, setUserName : (name: string) => void}) {
 
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
+  const [tempName, setTempName] = useState(userName);
   
   const connection = useSignalR();
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -55,11 +56,26 @@ function Chat({ roomId, userName }: { roomId: string , userName: string}) {
       <div className="mb-3">
         <label className="form-label fw-semibold">Twoja nazwa:</label>
         <input
-          className="form-control"
-          value={userName}
-          onChange={(e) => localStorage.setItem("userName", e.target.value)}
-          placeholder="Wpisz nick"
-        />
+            className="form-control"
+            value={tempName}
+            onChange={(e) => setTempName(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                setUserName(tempName.trim());
+                localStorage.setItem("userName", tempName.trim());
+              }
+            }}
+            placeholder="Wpisz nick"
+          />
+          <button
+              className="btn btn-secondary ms-2"
+              onClick={() => {
+                setUserName(tempName.trim());
+                localStorage.setItem("userName", tempName.trim());
+              }}
+            >
+              Zmień nick
+          </button>
       </div>
       {/* Messages */}
       <div className="chat-messages border rounded p-2 mb-3 flex-grow-1 overflow-auto d-flex flex-column">

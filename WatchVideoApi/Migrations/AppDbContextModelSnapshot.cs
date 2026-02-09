@@ -23,11 +23,8 @@ namespace WatchVideoApi.Migrations
 
             modelBuilder.Entity("WatchVideoApi.Models.ChatRoom", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
 
                     b.Property<string>("UrlEndPoint")
                         .IsRequired()
@@ -40,14 +37,11 @@ namespace WatchVideoApi.Migrations
 
             modelBuilder.Entity("WatchVideoApi.Models.User", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("ChatRoomId")
-                        .HasColumnType("integer");
+                    b.Property<string>("ChatRoomId")
+                        .HasColumnType("text");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -58,27 +52,6 @@ namespace WatchVideoApi.Migrations
                     b.HasIndex("ChatRoomId");
 
                     b.ToTable("User");
-                });
-
-            modelBuilder.Entity("WatchVideoApi.Models.Video", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Author")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Video");
                 });
 
             modelBuilder.Entity("WatchVideoApi.Models.User", b =>

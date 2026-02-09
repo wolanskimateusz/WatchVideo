@@ -37,7 +37,7 @@ public class ChatRoomController : Controller
     }
 
     [HttpGet("d/{id}")]
-    public async Task<IActionResult> GetChatRoomById(int id)
+    public async Task<IActionResult> GetChatRoomById(string id)
     {
         var chatroom = await _chatRoomRepo.GetChatRoomByIdAsync(id);
         if (chatroom != null) return Ok(chatroom);
@@ -50,5 +50,14 @@ public class ChatRoomController : Controller
         var chatroom = await _chatRoomRepo.GetChatRoomByUrlAsync(url);
         if (chatroom != null) return Ok(chatroom);
         return NotFound();
+    }
+    [HttpPut("{id}")]
+    public async Task<IActionResult> AddUserToRoomAsync([FromBody] CreateUserDto user, [FromRoute]string id)
+    {
+        var name = user.userName;
+        var room = await _chatRoomRepo.AddUserToRoomAsync(name, id);
+        if (room == null) return NotFound();
+        return Ok(user);
+
     }
 }

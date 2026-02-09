@@ -1,7 +1,10 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace WatchVideoApi.Models;
 
 public class User
 {
-    public int Id { get; set; }
+    [Key]
+    public string Id { get; set; } = Guid.NewGuid().ToString();
     public string Name { get; set; } = "name 1";
 }

@@ -13,6 +13,15 @@ interface ChatRoomData{
     urlEndPoint : string
 }
 
+interface UserDto {
+  userName: string;
+}
+
+interface RoomUsersDto {
+  roomId: string;
+  users: UserDto[];
+}
+
 
 function ChatRoom ()
 {
@@ -22,6 +31,7 @@ function ChatRoom ()
     const [userName, setUserName] = useState<string>("User1");
     const [showModal, setShowModal] = useState(false);
     const [tempName, setTempName] = useState("");
+    const [users, setUsers] = useState<UserDto[]>([]);
 
 
     useEffect(() => {
@@ -67,10 +77,18 @@ function ChatRoom ()
    
     startConnection();
 
+    const onUsersUpdated = (dto: RoomUsersDto) => {
+      if (dto.roomId === room?.urlEndPoint) {
+        setUsers(dto.users);
+      }
+    };
+    connection.on("RoomUsersUpdated", onUsersUpdated);
+
     return () => {
       if (connection.state === "Connected")
         connection.invoke("LeaveRoom", room.urlEndPoint, userName);
       connection.off("ReceiveMessage");
+      connection.off("RoomUsersUpdated", onUsersUpdated);
     };
   }, [room?.urlEndPoint, userName]);
 
@@ -85,7 +103,27 @@ function ChatRoom ()
    return (
   <>
     <h1 className="mb-3">Pokój: {room?.urlEndPoint}</h1>
+    {/* USERS LIST */}
+    <div className="mb-3 p-2 border rounded bg-light">
+      <h6 className="mb-2">Użytkownicy w pokoju</h6>
 
+      {users.length === 0 ? (
+        <small className="text-muted">Brak użytkowników</small>
+      ) : (
+        <ul className="list-group list-group-flush">
+        {users.map(u => (
+          <li
+            key={u.userName} 
+            className={`list-group-item px-1 py-1 ${
+              u.userName === userName ? "fw-bold text-primary" : ""
+            }`}
+          >
+            {u.userName}
+          </li>
+        ))}
+</ul>
+      )}
+    </div>
         <div className="container-fluid w-100 ">
         <div className="row" style={{ height: "80vh" }}>
             {/* VIDEO */}
@@ -101,7 +139,7 @@ function ChatRoom ()
             <div className="col-4 h-100 ">
             <div className="h-100 ps-3">
                 <SignalRContext.Provider value={connection}>
-                {room && <Chat roomId={room.urlEndPoint} userName={userName} />}
+                {room && <Chat roomId={room.urlEndPoint} userName={userName} setUserName={setUserName}/>}
                 </SignalRContext.Provider>
             </div>
             </div>

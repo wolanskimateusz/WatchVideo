@@ -10,10 +10,12 @@ namespace WatchVideoApi.Repositories;
 public class ChatRoomRepository :  IChatRoomRepository
 {
     private readonly AppDbContext _context;
+    private readonly IUserRepository _userRepo;
 
-    public ChatRoomRepository(AppDbContext context)
+    public ChatRoomRepository(AppDbContext context,  IUserRepository userRepo)
     {
         _context = context;
+        _userRepo = userRepo;
     }
     public async Task<ChatRoom> CreateChatRoomAsync(string roomName)       
     {
@@ -35,7 +37,7 @@ public class ChatRoomRepository :  IChatRoomRepository
         return chatRooms;
     }
     
-    public async Task<ChatRoom> GetChatRoomByIdAsync(int roomId)
+    public async Task<ChatRoom> GetChatRoomByIdAsync(string roomId)
     {
         var chatroom = await _context.ChatRoom.FirstOrDefaultAsync(x => x.Id == roomId);
         if (chatroom == null) return null; 
@@ -47,6 +49,19 @@ public class ChatRoomRepository :  IChatRoomRepository
         var chatroom = await _context.ChatRoom.FirstOrDefaultAsync(x => x.UrlEndPoint.Equals(url));
         if (chatroom == null) return null;
         return chatroom;
+    }
+
+    public async Task<ChatRoom> AddUserToRoomAsync(string userName, string roomId)
+    {
+        var user = await _userRepo.GetUserByName(userName);
+        if (user == null) return null;
+        var room = await  _context.ChatRoom
+            .Include(r=> r.Users)
+            .FirstOrDefaultAsync(x => x.Id == roomId);
+        if (room == null) return null;
+        room.Users.Add(user);
+        await _context.SaveChangesAsync();
+        return room;
     }
 
     private async Task<string> CreateDefaultUrlEndpoint()

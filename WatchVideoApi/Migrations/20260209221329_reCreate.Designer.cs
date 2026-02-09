@@ -11,8 +11,8 @@ using WatchVideoApi.Data;
 namespace WatchVideoApi.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251202162242_AddedChat")]
-    partial class AddedChat
+    [Migration("20260209221329_reCreate")]
+    partial class reCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,13 +24,10 @@ namespace WatchVideoApi.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("WatchVideoApi.Models.Chat", b =>
+            modelBuilder.Entity("WatchVideoApi.Models.ChatRoom", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
 
                     b.Property<string>("UrlEndPoint")
                         .IsRequired()
@@ -38,19 +35,16 @@ namespace WatchVideoApi.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Chat");
+                    b.ToTable("ChatRoom");
                 });
 
             modelBuilder.Entity("WatchVideoApi.Models.User", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("ChatId")
-                        .HasColumnType("integer");
+                    b.Property<string>("ChatRoomId")
+                        .HasColumnType("text");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -58,40 +52,19 @@ namespace WatchVideoApi.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ChatId");
+                    b.HasIndex("ChatRoomId");
 
                     b.ToTable("User");
                 });
 
-            modelBuilder.Entity("WatchVideoApi.Models.Video", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Author")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Videos");
-                });
-
             modelBuilder.Entity("WatchVideoApi.Models.User", b =>
                 {
-                    b.HasOne("WatchVideoApi.Models.Chat", null)
+                    b.HasOne("WatchVideoApi.Models.ChatRoom", null)
                         .WithMany("Users")
-                        .HasForeignKey("ChatId");
+                        .HasForeignKey("ChatRoomId");
                 });
 
-            modelBuilder.Entity("WatchVideoApi.Models.Chat", b =>
+            modelBuilder.Entity("WatchVideoApi.Models.ChatRoom", b =>
                 {
                     b.Navigation("Users");
                 });

@@ -23,7 +23,7 @@ public class UserRepository: IUserRepository
            return newUser;
     }
 
-    public async Task<User> DeleteUser(int userId)
+    public async Task<User> DeleteUser(string userId)
     {
         var user = await _context.User.FirstOrDefaultAsync(x => x.Id == userId);
         if (user == null) return null;
@@ -32,7 +32,7 @@ public class UserRepository: IUserRepository
         return  user;
     }
 
-    public async Task<User> GetUserById(int userId)
+    public async Task<User> GetUserById(string userId)
     {
         var user = await _context.User.FirstOrDefaultAsync(x => x.Id == userId);
         if (user == null) return null;

@@ -9,7 +9,9 @@ public interface IChatRoomRepository
     
     Task<List<ChatRoom>> GetAllChatRoomsAsync();
     
-    Task<ChatRoom> GetChatRoomByIdAsync(int roomId);
+    Task<ChatRoom> GetChatRoomByIdAsync(string roomId);
     
     Task<ChatRoom> GetChatRoomByUrlAsync(string url);
+    
+    Task<ChatRoom> AddUserToRoomAsync(string userName, string roomId);
 }
