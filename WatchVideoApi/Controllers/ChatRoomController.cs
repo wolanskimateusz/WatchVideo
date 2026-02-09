@@ -19,7 +19,7 @@ public class ChatRoomController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] CreateFromRequest request)
+    public async Task<IActionResult> Create([FromBody] CreateRoomDto request)
     { 
         var roomName = request?.roomName;
        var createdRoom =  await _chatRoomRepo.CreateChatRoomAsync(roomName);

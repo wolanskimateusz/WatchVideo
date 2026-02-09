@@ -1,6 +1,6 @@
 ﻿namespace WatchVideoApi.Dtos;
 
-public class CreateFromRequest
+public class CreateRoomDto
 {
     public string roomName { get; set; }
 }
