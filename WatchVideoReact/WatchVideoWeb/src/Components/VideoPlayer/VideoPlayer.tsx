@@ -106,26 +106,26 @@ function VideoPlayer({ roomId, userName }: { roomId: string, userName: string })
         </div>
 
         {/* Video Frame */}
-        <div className="card bg-black border-secondary flex-grow-1 overflow-hidden shadow-lg">
-            <div className="card-body p-0 d-flex align-items-center justify-content-center bg-black">
-                <div className="ratio ratio-16x9 w-100">
-                    <ReactPlayer
-                        ref={playerRef}
-                        url={videoURL} // Poprawione z 'src' na 'url' (właściwość ReactPlayer)
-                        playing={isPlaying}
-                        width="100%"
-                        height="100%"
-                        controls={true}
-                        onReady={() => {
-                            const title = playerRef.current?.getInternalPlayer()?.getVideoData?.()?.title;
-                            if (title) setVideoTitle(title);
-                        }}
-                    />
+        <div className="card-body p-0 bg-black d-flex align-items-center justify-content-center overflow-hidden" style={{ position: 'relative', flex: 1 }}>
+                <div style={{ width: '100%', height: '100%', maxWidth: '100%', maxHeight: '100%' }}>
+                <ReactPlayer
+                    ref={playerRef}
+                    src={videoURL} 
+                    playing={isPlaying}
+                    width="100%"
+                    height="100%"
+                    controls={true}
+                    style={{ position: 'absolute', top: 0, left: 0 }}
+                    onReady={() => {
+                    const title = playerRef.current?.getInternalPlayer()?.getVideoData?.()?.title;
+                    if (title) setVideoTitle(title);
+                    }}
+                />
                 </div>
-            </div>
+         </div>
             
             {/* Przyciski pod wideo */}
-            <div className="card-footer bg-dark border-secondary d-flex justify-content-center gap-3 p-3">
+            <div className="card-footer bg-dark border-secondary d-flex justify-content-center gap-3 p-3 flex-shrink-0">
                 <button className="btn btn-lg btn-success px-5" onClick={sendPlay}>
                     <i className="bi bi-play-fill"></i> Play
                 </button>
@@ -133,7 +133,6 @@ function VideoPlayer({ roomId, userName }: { roomId: string, userName: string })
                     <i className="bi bi-pause-fill"></i> Pause
                 </button>
             </div>
-        </div>
     </div>
 );
     
