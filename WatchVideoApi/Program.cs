@@ -40,9 +40,9 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+builder.Services.AddSingleton<IRoomStateService, RoomStateService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IChatRoomRepository, ChatRoomRepository>();
-builder.Services.AddSingleton<RoomStateService>();
 
 builder.Services.AddOpenApi();
 builder.Services.AddSignalR();

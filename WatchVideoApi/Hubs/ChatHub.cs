@@ -1,14 +1,15 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using System.Text.RegularExpressions;
 using WatchVideoApi.Dtos;
+using WatchVideoApi.Interfaces;
 using WatchVideoApi.Services;
 
 public class ChatHub : Hub
 {
-    private readonly RoomStateService _roomStateService;
+    private readonly IRoomStateService _roomStateService;
     
 
-    public ChatHub(RoomStateService roomStateService)
+    public ChatHub(IRoomStateService roomStateService)
     {
         _roomStateService = roomStateService;
     }

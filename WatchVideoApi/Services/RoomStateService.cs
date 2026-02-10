@@ -38,13 +38,18 @@ public class RoomStateService : IRoomStateService
 
     public RoomState CreateRoom(string roomName)
     {
+        if (string.IsNullOrWhiteSpace(roomName))
+            throw new ArgumentException("Room name cannot be empty");
         
-        return new RoomState()
+        var roomState = new RoomState()
         {
-            roomName = roomName,
+            roomName = roomName.Trim(),
             roomId = Guid.NewGuid().ToString(),
         };
-
+        
+        _rooms.TryAdd(roomState.roomId, roomState);
+        
+        return roomState;
         
     }
     
