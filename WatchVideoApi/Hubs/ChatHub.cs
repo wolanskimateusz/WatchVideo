@@ -69,6 +69,7 @@ public class ChatHub : Hub
     public async Task ChangeVideo(string roomId, string url, string userName, string videoTitle)
     {
         _roomStateService.SetVideo(roomId, url);
+        _roomStateService.GetRoom(roomId).currTime = 0;
         await Clients.Group(roomId).SendAsync("VideoChange", url);
         await Clients.Group(roomId).SendAsync("ReceiveSystemMessage", $"{userName} changed video to {videoTitle}");
     }
