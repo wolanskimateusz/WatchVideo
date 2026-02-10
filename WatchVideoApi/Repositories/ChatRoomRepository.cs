@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using WatchVideoApi.Data;
 using WatchVideoApi.Dtos;
 using WatchVideoApi.Interfaces;
+using WatchVideoApi.Mappers;
 using WatchVideoApi.Models;
 
 namespace WatchVideoApi.Repositories;
@@ -11,63 +12,39 @@ public class ChatRoomRepository :  IChatRoomRepository
 {
     private readonly AppDbContext _context;
     private readonly IUserRepository _userRepo;
+    private readonly IRoomStateService _roomStateService;
 
-    public ChatRoomRepository(AppDbContext context,  IUserRepository userRepo)
+    public ChatRoomRepository(AppDbContext context,  IUserRepository userRepo, IRoomStateService roomStateService)
     {
         _context = context;
         _userRepo = userRepo;
+        _roomStateService = roomStateService;
     }
-    public async Task<ChatRoom> CreateChatRoomAsync(string roomName)       
+    public ChatRoom CreateChatRoom(string roomName)       
     {
-        var chatRoomModel = new ChatRoom();
-        var room = await GetChatRoomByUrlAsync(roomName.Trim());
-        if (room == null && !string.IsNullOrEmpty(roomName)) 
-            chatRoomModel.UrlEndPoint = roomName.Trim();
-        else chatRoomModel.UrlEndPoint = await CreateDefaultUrlEndpoint();
-        await _context.AddAsync(chatRoomModel);
-        await _context.SaveChangesAsync();
+       
+        var roomState = _roomStateService.CreateRoom(roomName);
+        
+        var chatRoom = roomState.ToChatRoomFromRoomState();
     
-        return chatRoomModel;  
+        return chatRoom;  
     }
 
-    public async Task<List<ChatRoom>> GetAllChatRoomsAsync()
+    public List<ChatRoom> GetAllChatRooms()
     {
-        var chatRooms = await _context.ChatRoom.ToListAsync();
+        var roomStates =  _roomStateService.GetAllRooms();
+        var chatRooms = roomStates.Select(x => x.ToChatRoomFromRoomState()).ToList();
         
         return chatRooms;
     }
     
-    public async Task<ChatRoom> GetChatRoomByIdAsync(string roomId)
+    public ChatRoom GetChatRoomById(string roomId)
     {
-        var chatroom = await _context.ChatRoom.FirstOrDefaultAsync(x => x.Id == roomId);
+        var chatroom = _roomStateService.GetRoom(roomId).ToChatRoomFromRoomState();
         if (chatroom == null) return null; 
         return chatroom;
     }
 
-    public async Task<ChatRoom> GetChatRoomByUrlAsync(string url)
-    {
-        var chatroom = await _context.ChatRoom.FirstOrDefaultAsync(x => x.UrlEndPoint.Equals(url));
-        if (chatroom == null) return null;
-        return chatroom;
-    }
-
-    public async Task<ChatRoom> AddUserToRoomAsync(string userName, string roomId)
-    {
-        var user = await _userRepo.GetUserByName(userName);
-        if (user == null) return null;
-        var room = await  _context.ChatRoom
-            .Include(r=> r.Users)
-            .FirstOrDefaultAsync(x => x.Id == roomId);
-        if (room == null) return null;
-        room.Users.Add(user);
-        await _context.SaveChangesAsync();
-        return room;
-    }
-
-    private async Task<string> CreateDefaultUrlEndpoint()
-    {
-        var rooms = await _context.ChatRoom.CountAsync();
-        var url = $"room{rooms+1}";
-        return url;
-    }
+    
+    
 }

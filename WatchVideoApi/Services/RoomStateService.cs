@@ -1,11 +1,12 @@
 ﻿using System.Collections.Concurrent;
+using WatchVideoApi.Dtos;
 using WatchVideoApi.Interfaces;
 using WatchVideoApi.Models;
 using WatchVideoApi.Repositories;
 
 namespace WatchVideoApi.Services;
 
-public class RoomStateService
+public class RoomStateService : IRoomStateService
 {
     private ConcurrentDictionary<string, RoomState> _rooms = new();
     
@@ -33,6 +34,18 @@ public class RoomStateService
                 await Task.Delay(TimeSpan.FromMinutes(1)); // sprawdzaj co minutę
             }
         });
+    }
+
+    public RoomState CreateRoom(string roomName)
+    {
+        
+        return new RoomState()
+        {
+            roomName = roomName,
+            roomId = Guid.NewGuid().ToString(),
+        };
+
+        
     }
     
     public RoomState GetRoom(string roomId)

@@ -5,13 +5,11 @@ namespace WatchVideoApi.Interfaces;
 
 public interface IChatRoomRepository
 {
-    Task<ChatRoom> CreateChatRoomAsync(string roomName);
+    ChatRoom CreateChatRoom(string roomName);
     
-    Task<List<ChatRoom>> GetAllChatRoomsAsync();
-    
-    Task<ChatRoom> GetChatRoomByIdAsync(string roomId);
-    
-    Task<ChatRoom> GetChatRoomByUrlAsync(string url);
-    
-    Task<ChatRoom> AddUserToRoomAsync(string userName, string roomId);
+    List<ChatRoom> GetAllChatRooms();
+
+    public ChatRoom GetChatRoomById(string roomId);
+
+
 }

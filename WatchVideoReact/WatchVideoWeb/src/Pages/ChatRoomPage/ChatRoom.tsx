@@ -11,6 +11,7 @@ import { SignalRContext } from "../../SignalRContext";
 interface ChatRoomData{
     id : string
     urlEndPoint : string
+    name: string
 }
 
 interface UserDto {
@@ -102,13 +103,13 @@ function ChatRoom ()
 
    return (
   <>
-    <h1 className="mb-3">Pokój: {room?.urlEndPoint}</h1>
+    <h1 className="mb-3">Room: {room?.name}</h1>
     {/* USERS LIST */}
     <div className="mb-3 p-2 border rounded bg-light">
-      <h6 className="mb-2">Użytkownicy w pokoju</h6>
+      <h6 className="mb-2">Current users:</h6>
 
       {users.length === 0 ? (
-        <small className="text-muted">Brak użytkowników</small>
+        <small className="text-muted">No users</small>
       ) : (
         <ul className="list-group list-group-flush">
         {users.map(u => (

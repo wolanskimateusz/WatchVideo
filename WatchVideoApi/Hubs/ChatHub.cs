@@ -6,6 +6,7 @@ using WatchVideoApi.Services;
 public class ChatHub : Hub
 {
     private readonly RoomStateService _roomStateService;
+    
 
     public ChatHub(RoomStateService roomStateService)
     {

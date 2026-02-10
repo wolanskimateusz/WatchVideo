@@ -11,5 +11,7 @@ public class ChatRoom
     
     public List<User> Users { get; set; } = new List<User>();
     
+    public string Name { get; set; } = string.Empty;
+    
 
 }
