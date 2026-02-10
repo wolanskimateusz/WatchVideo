@@ -18,7 +18,7 @@ public class RoomStateService : IRoomStateService
         
         Task.Run(async () =>
         {
-            var maxEmptyTime = TimeSpan.FromMinutes(1);
+            var maxEmptyTime = TimeSpan.FromMinutes(5);
 
             while (true)
             {

@@ -9,8 +9,6 @@ public class ChatRoom
     [Required]
     public string UrlEndPoint { get; set; } = String.Empty;
     
-    public List<User> Users { get; set; } = new List<User>();
-    
     public string Name { get; set; } = string.Empty;
     
 

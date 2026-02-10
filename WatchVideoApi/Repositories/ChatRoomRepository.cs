@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
-using WatchVideoApi.Data;
 using WatchVideoApi.Dtos;
 using WatchVideoApi.Interfaces;
 using WatchVideoApi.Mappers;
@@ -10,14 +9,12 @@ namespace WatchVideoApi.Repositories;
 
 public class ChatRoomRepository :  IChatRoomRepository
 {
-    private readonly AppDbContext _context;
-    private readonly IUserRepository _userRepo;
+   
     private readonly IRoomStateService _roomStateService;
 
-    public ChatRoomRepository(AppDbContext context,  IUserRepository userRepo, IRoomStateService roomStateService)
+    public ChatRoomRepository( IRoomStateService roomStateService)
     {
-        _context = context;
-        _userRepo = userRepo;
+       
         _roomStateService = roomStateService;
     }
     public ChatRoom CreateChatRoom(string roomName)       

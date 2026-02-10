@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using WatchVideoApi.Data;
+
 using WatchVideoApi.Interfaces;
 using WatchVideoApi.Repositories;
 using WatchVideoApi.Services;
@@ -10,19 +10,6 @@ DotNetEnv.Env.Load();
 
 // DataBase
 
-var connstring = builder.Configuration.GetConnectionString("DefaultConnection") ??
-                       throw new NullReferenceException("No connection string in config!");
-
-string connectionString = connstring
-    .Replace("{DB_Host}", Environment.GetEnvironmentVariable("DB_Host")!)
-    .Replace("{Database}", Environment.GetEnvironmentVariable("Database")!)
-    .Replace("{Username}", Environment.GetEnvironmentVariable("Username")!)
-    .Replace("{Password}", Environment.GetEnvironmentVariable("Password")!);
-
-builder.Services.AddDbContext<AppDbContext>(options =>
-{
-    options.UseNpgsql(connectionString);
-});
 
 builder.Services.AddCors(options =>
 {
@@ -41,7 +28,6 @@ builder.Services.AddCors(options =>
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddSingleton<IRoomStateService, RoomStateService>();
-builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IChatRoomRepository, ChatRoomRepository>();
 
 builder.Services.AddOpenApi();
