@@ -117,7 +117,7 @@ function VideoPlayer({ roomId, userName }: { roomId: string, userName: string })
                     controls={true}
                     style={{ position: 'absolute', top: 0, left: 0 }}
                     onReady={() => {
-                    const title = playerRef.current?.getInternalPlayer()?.getVideoData?.()?.title;
+                    const title = playerRef.current.api.videoTitle;
                     if (title) setVideoTitle(title);
                     }}
                 />
