@@ -88,45 +88,54 @@ function VideoPlayer({ roomId, userName }: { roomId: string, userName: string })
         );
         }, [videoTitle]);
 
-    return (
-        <>
-       <input
-            value={videoURL}
-            onChange={(e) => {
-                isLocalChangeRef.current = true;
-                setVideoURL(e.target.value);
-                setVideoTitle(""); 
-            }}
-            placeholder='Video link here'
+     return (
+    <div className="h-100 d-flex flex-column gap-3">
+        {/* Input linku - teraz na pełną szerokość dostępnej kolumny */}
+        <div className="input-group shadow-sm">
+            <span className="input-group-text bg-secondary border-secondary text-light">URL</span>
+            <input
+                className="form-control bg-dark text-light border-secondary"
+                value={videoURL}
+                onChange={(e) => {
+                    isLocalChangeRef.current = true;
+                    setVideoURL(e.target.value);
+                    setVideoTitle(""); 
+                }}
+                placeholder="Wklej link z YouTube..."
             />
+        </div>
 
-       <ReactPlayer
-        ref={playerRef}
-        src={videoURL}
-        playing = {isPlaying}
-        config={{
-            youtube: {
-            color: 'white',
-            },
-        }}
-        onReady={() => {
-            const title = playerRef.current.api.videoTitle;
-            if (title) setVideoTitle(title);
-        }}
-        onTimeUpdate={() => {
-            const time = playerRef.current.api.getCurrentTime()
-            setCurrTime(time)
-            sendCurrentTime(time)
-        }} 
-       ></ReactPlayer>
-       
-
-       <button onClick={sendPlay}>PLAY</button>
-       <button onClick={sendPause}>PAUSE</button>
-       
-
-       </>
-    )
+        {/* Video Frame */}
+        <div className="card bg-black border-secondary flex-grow-1 overflow-hidden shadow-lg">
+            <div className="card-body p-0 d-flex align-items-center justify-content-center bg-black">
+                <div className="ratio ratio-16x9 w-100">
+                    <ReactPlayer
+                        ref={playerRef}
+                        url={videoURL} // Poprawione z 'src' na 'url' (właściwość ReactPlayer)
+                        playing={isPlaying}
+                        width="100%"
+                        height="100%"
+                        controls={true}
+                        onReady={() => {
+                            const title = playerRef.current?.getInternalPlayer()?.getVideoData?.()?.title;
+                            if (title) setVideoTitle(title);
+                        }}
+                    />
+                </div>
+            </div>
+            
+            {/* Przyciski pod wideo */}
+            <div className="card-footer bg-dark border-secondary d-flex justify-content-center gap-3 p-3">
+                <button className="btn btn-lg btn-success px-5" onClick={sendPlay}>
+                    <i className="bi bi-play-fill"></i> Play
+                </button>
+                <button className="btn btn-lg btn-danger px-5" onClick={sendPause}>
+                    <i className="bi bi-pause-fill"></i> Pause
+                </button>
+            </div>
+        </div>
+    </div>
+);
     
 }
 

@@ -50,64 +50,61 @@ function Chat({ roomId, userName, setUserName }: { roomId: string , userName: st
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  return (
-    <div className="border rounded p-3 h-100 d-flex flex-column">
-        {/* Nazwa użytkownika */}
-      <div className="mb-3">
-        <label className="form-label fw-semibold">Twoja nazwa:</label>
-        <input
-            className="form-control"
-            value={tempName}
-            onChange={(e) => setTempName(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                setUserName(tempName.trim());
-                localStorage.setItem("userName", tempName.trim());
-              }
-            }}
-            placeholder="Wpisz nick"
-          />
-          <button
-              className="btn btn-secondary ms-2"
-              onClick={() => {
-                setUserName(tempName.trim());
-                localStorage.setItem("userName", tempName.trim());
-              }}
-            >
-              Zmień nick
-          </button>
-      </div>
-      {/* Messages */}
-      <div className="chat-messages border rounded p-2 mb-3 flex-grow-1 overflow-auto d-flex flex-column">
-        {messages.map((m, i) => (
-          <div key={i} className={`mb-1 chat-message ${m.type}`}>
-            {m.type === "user" ? (
-              <>
-                <span className="chat-username">{m.userName}:</span>{" "}
-                <span className="chat-text">{m.message}</span>
-              </>
-            ) : (
-              <span className="chat-system">{m.message}</span>
-            )}
-          </div>
-        ))}
-        <div ref={messagesEndRef} />
-      </div>
+ return (
+    <div className="d-flex flex-column h-100 bg-dark">
+        <div className="p-3 flex-grow-1 d-flex flex-column gap-3 overflow-hidden">
 
-      {/* Input */}
-      <div className="input-group">
-        <input
-          className="form-control"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-        />
-        <button className="btn btn-primary" onClick={sendMessage}>
-          Wyślij
-        </button>
-      </div>
+            {/* Zmiana nicku */}
+            <div className="bg-secondary bg-opacity-10 p-2 rounded">
+                <div className="input-group input-group-sm">
+                    <input
+                        className="form-control bg-dark text-light border-secondary"
+                        value={tempName}
+                        onChange={(e) => setTempName(e.target.value)}
+                        placeholder="Twój nick"
+                    />
+                    <button className="btn btn-outline-info" onClick={() => {
+                        setUserName(tempName.trim());
+                        localStorage.setItem("userName", tempName.trim());
+                    }}>Change</button>
+                </div>
+            </div>
+
+            {/* Chat */}
+            <div className="flex-grow-1 overflow-auto border border-secondary rounded p-2 bg-black bg-opacity-25 shadow-inner">
+                {messages.map((m, i) => (
+                    <div key={i} className={`mb-2 small ${m.type === 'system' ? 'text-center' : ''}`}>
+                        {m.type === "user" ? (
+                            <div>
+                                <span className="fw-bold text-info">{m.userName}:</span>
+                                <span className="ms-2 text-light">{m.message}</span>
+                            </div>
+                        ) : (
+                            <span className="text-secondary fst-italic" style={{fontSize: '0.8rem'}}>
+                                — {m.message} —
+                            </span>
+                        )}
+                    </div>
+                ))}
+                <div ref={messagesEndRef} />
+            </div>
+
+            {/* Wysyłanie */}
+            <div className="input-group">
+                <input
+                    className="form-control bg-dark text-light border-secondary"
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+                    placeholder="Napisz..."
+                />
+                <button className="btn btn-primary" onClick={sendMessage}>
+                    <i className="bi bi-send"></i>
+                </button>
+            </div>
+        </div>
     </div>
-  );
+);
 }
 
 export default Chat;
